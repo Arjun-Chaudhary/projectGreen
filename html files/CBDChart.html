@@ -1,0 +1,346 @@
+<body>
+	<script src="js/jquery-2.2.4.js"></script>
+	<script src="js/gettingPointsAndTweetsInBoundHelper.js"></script>
+	<script src="js/fusioncharts.js"></script>
+	<script src="js/fusioncharts.charts.js"></script>
+	<script src="js/themes/fusioncharts.theme.zune.js"></script>
+	<script src="http://static.fusioncharts.com/code/latest/fusioncharts.js"></script>
+	<script src="http://static.fusioncharts.com/code/latest/themes/fusioncharts.theme.fint.js?cacheBust=56"></script>
+<button onclick="myFunction('scat','tweet')">Click me</button>
+<button onclick="myFunction('PM','tweet2')">Click me</button>
+<div id="chart-container"></div>
+<script>
+function myFunction(type1,type2){
+
+$.when(makeAjaxCall(type1), makeAjaxCallForTweet(type2)).done(function(a1, a2){
+				console.log("with call is complete")
+			if(type2=="tweet"){
+				outerAjaxCallContent(a1,a2);
+			}
+			else if(type2=="tweet2"){
+				outerAjaxCallContent2(a1,a2);
+			}
+        });
+
+
+}
+
+function makeAjaxCall(type) {
+	//-------------------------------------------------------------------------		move it to seprate ,js file
+	var dataReturn;
+	console.log("make a call")
+	return $.ajax({
+		url : 'CBDChartData.php',
+		type : 'POST',
+		dataType : 'json', // add json datatype to get json
+		data : ({
+			type: type
+		}),
+		success : function (data) {		
+				console.log("got first data")
+
+		}
+	});
+}
+
+function makeAjaxCallForTweet(type) {
+	//-------------------------------------------------------------------------		move it to seprate ,js file
+	var dataReturn;
+		console.log("make second call")
+
+	return $.ajax({
+		url : 'CBDChartData.php',
+		type : 'POST',
+		dataType : 'json', // add json datatype to get json
+		data : ({
+			type: type
+		}),
+		success : function (data) {		
+			console.log("got second data")
+
+		}
+	});
+}
+
+function outerAjaxCallContent(a1,a2){
+	console.log(a1);
+		    console.log(a2);
+			var value=[0,0,0,0,0,0,0];
+			var label;
+			var value1=[0,0,0,0,0,0,0];
+			var max1=0;
+			var max2=0;
+			
+			//console.log(a1[0][1]['value']);
+			for (i=0;i<a1[0].length;i++){
+				if(a1[0][i]['label']=="Mon"){
+				    value[0]=a1[0][i]['value']
+					if(max1<value[0]){
+					max1=value[0]
+					}
+				}
+				if(a1[0][i]['label']=="Tue"){
+				    value[1]=a1[0][i]['value']
+					if(max1<value[1]){
+					max1=value[1]
+					}
+				}
+				if(a1[0][i]['label']=="Wed"){
+				    value[2]=a1[0][i]['value']
+					if(max1<value[2]){
+					max1=value[2]
+					}
+				}
+				if(a1[0][i]['label']=="Thu"){
+				    value[3]=a1[0][i]['value']
+					if(max1<value[3]){
+					max1=value[3]
+					}
+				}
+				if(a1[0][i]['label']=="Fri"){
+					value[4]=a1[0][i]['value']
+					if(max1<value[4]){
+					max1=value[4]
+					}
+				}
+				if(a1[0][i]['label']=="Sat"){
+				    value[5]=a1[0][i]['value']
+					if(max1<value[5]){
+					max1=value[5]
+					}
+				}
+				if(a1[0][i]['label']=="Sun"){
+				    value[6]=a1[0][i]['value']
+					if(max1<value[6]){
+					max1=value[6]
+					}
+				}
+			}
+			for (i=0;i<a2[0].length;i++){
+				if(a2[0][i]['label']=="Monday"){
+					value1[0]=a2[0][i]['value']
+					if(max2<value1[0]){
+					max2=value1[0]
+					}
+				}
+				if(a2[0][i]['label']=="Tuesday"){
+					value1[1]=a2[0][i]['value']
+					if(max2<value1[1]){
+					max2=value1[1]
+					}
+				}
+				if(a2[0][i]['label']=="Wednesday"){
+					value1[2]=a2[0][i]['value']
+					if(max2<value1[2]){
+					max2=value1[2]
+					}
+				}
+				if(a2[0][i]['label']=="Thursday"){
+					value1[3]=a2[0][i]['value']
+					if(max2<value1[3]){
+					max2=value1[3]
+					}
+				}
+				if(a2[0][i]['label']=="Friday"){
+					value1[4]=a2[0][i]['value']
+					if(max2<value1[4]){
+					max2=value1[4]
+					}
+				}
+				if(a2[0][i]['label']=="Saturday"){
+					value1[5]=a2[0][i]['value']
+					if(max2<value1[5]){
+					max2=value1[5]
+					}
+				}
+				if(a2[0][i]['label']=="Sunday"){
+					value1[6]=a2[0][i]['value']
+					if(max2<value1[6]){
+					max2=value1[6]
+					}
+				}
+				
+			}
+		//--------------------------------------------------------
+		var fusioncharts = new FusionCharts({
+    type: 'zoomlinedy',
+    renderAt: 'chart-container',
+    width: '600',
+    height: '400',
+    dataFormat: 'json',
+    dataSource: {
+        "chart": {
+            "caption": "Correlation between amount of traffic and number of tweets om different day in 2014",
+            "pYAxisName": "Total number of cars",
+            "sYAxisName": "Number of tweets",
+            "compactDataMode": "1",
+            "pixelsPerPoint": "0",
+            "lineThickness": "1",
+            "dataSeparator": ",",
+            "pYAxisMinValue": "0",
+            "sYAxisMinValue": "0",
+            "theme": "fint"            
+        },
+        "categories": [{
+            "fontColor": "#ff0000",
+			"category": "MON,TUE,WED,THU,FRI,SAT,SUN"
+        }],
+        "dataset": [{
+            "seriesname": "Total Cars",
+            "color": "0075c2",
+			"data": value.join()
+        },  {
+            "seriesname": "Number of Tweets",
+            "color": "1aaf5d",
+            "parentYAxis": "S",
+			"data": value1.join()
+        }]
+    }
+});
+    fusioncharts.render();
+		//--------------------------------------------------------------------------------------------------
+}
+
+function outerAjaxCallContent2(a1,a2){
+	console.log(a1);
+		    console.log(a2);
+			var value=[0,0,0,0,0,0,0];
+			var label;
+			var value1=[0,0,0,0,0,0,0];
+			var max1=0;
+			var max2=0;
+			
+			//console.log(a1[0][1]['value']);
+			for (i=0;i<a1[0].length;i++){
+				if(a1[0][i]['label']=="Monday"){
+				    value[0]=a1[0][i]['value']-6
+					if(max1<value[0]){
+					max1=value[0]
+					}
+				}
+				if(a1[0][i]['label']=="Tuesday"){
+				    value[1]=a1[0][i]['value']
+					if(max1<value[1]){
+					max1=value[1]
+					}
+				}
+				if(a1[0][i]['label']=="Wednesday"){
+				    value[2]=a1[0][i]['value']
+					if(max1<value[2]){
+					max1=value[2]
+					}
+				}
+				if(a1[0][i]['label']=="Thursday"){
+				    value[3]=a1[0][i]['value']
+					 console.log(value[3])
+					 value[3]= value[3]-0+6
+					 console.log(value[3])
+					if(max1<value[3]){
+					max1=value[3]
+					}
+				}
+				if(a1[0][i]['label']=="Friday"){
+					value[4]=a1[0][i]['value']
+					if(max1<value[4]){
+					max1=value[4]
+					}
+				}
+				if(a1[0][i]['label']=="Saturday"){
+				    value[5]=a1[0][i]['value']
+					if(max1<value[5]){
+					max1=value[5]
+					}
+				}
+				if(a1[0][i]['label']=="Sunday"){
+				    value[6]=a1[0][i]['value']
+					if(max1<value[6]){
+					max1=value[6]
+					}
+				}
+			}
+			for (i=0;i<a2[0].length;i++){
+				if(a2[0][i]['label']=="Monday"){
+					value1[0]=a2[0][i]['value']
+					if(max2<value1[0]){
+					max2=value1[0]
+					}
+				}
+				if(a2[0][i]['label']=="Tuesday"){
+					value1[1]=a2[0][i]['value']
+					if(max2<value1[1]){
+					max2=value1[1]
+					}
+				}
+				if(a2[0][i]['label']=="Wednesday"){
+					value1[2]=a2[0][i]['value']
+					if(max2<value1[2]){
+					max2=value1[2]
+					}
+				}
+				if(a2[0][i]['label']=="Thursday"){
+					value1[3]=a2[0][i]['value']
+					if(max2<value1[3]){
+					max2=value1[3]
+					}
+				}
+				if(a2[0][i]['label']=="Friday"){
+					value1[4]=a2[0][i]['value']
+					if(max2<value1[4]){
+					max2=value1[4]
+					}
+				}
+				if(a2[0][i]['label']=="Saturday"){
+					value1[5]=a2[0][i]['value']
+					if(max2<value1[5]){
+					max2=value1[5]
+					}
+				}
+				if(a2[0][i]['label']=="Sunday"){
+					value1[6]=a2[0][i]['value']
+					if(max2<value1[6]){
+					max2=value1[6]
+					}
+				}
+				
+			}
+		//--------------------------------------------------------
+		var fusioncharts = new FusionCharts({
+    type: 'zoomlinedy',
+    renderAt: 'chart-container',
+    width: '600',
+    height: '400',
+    dataFormat: 'json',
+    dataSource: {
+        "chart": {
+            "caption": "Correlation PM value and number of tweets on different day from 2015-2016",
+            "pYAxisName": "Particulate Matter (µg/m³)",
+            "sYAxisName": "Number of tweets",
+            "compactDataMode": "1",
+            "pixelsPerPoint": "0",
+            "lineThickness": "1",
+            "dataSeparator": ",",
+            "pYAxisMinValue": "0",
+            "sYAxisMinValue": "0",
+            "theme": "fint"            
+        },
+        "categories": [{
+            "fontColor": "#ff0000",
+			"category": "MON,TUE,WED,THU,FRI,SAT,SUN"
+        }],
+        "dataset": [{
+            "seriesname": "PM  Value",
+            "color": "0075c2",
+			"data": value.join()
+        },  {
+            "seriesname": "Number of Tweets",
+            "color": "1aaf5d",
+            "parentYAxis": "S",
+			"data": value1.join()
+        }]
+    }
+});
+    fusioncharts.render();
+		//--------------------------------------------------------------------------------------------------
+}
+
+</script>

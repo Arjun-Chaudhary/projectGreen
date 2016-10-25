@@ -1,0 +1,40 @@
+<head>
+<script src="js/jquery-2.2.4.js"></script>
+</head>
+
+<body>
+	<button id="action-button">Click me to get daywise comparison</button>
+	<select id="daySelector" style="display:none;">
+		<option value="Monday">Mon</option>
+		<option value="Tuesday">Tue</option>
+		<option value="Wednesday">Wed</option>
+		<option value="Thursday">Thu</option>
+		<option value="Friday">Fri</option>
+		<option value="Saturday">Sat</option>
+		<option value="Sunday">Sun</option>
+	</select>
+
+	<script>
+		$('#action-button').click(function() {
+			consol.log("making ajax call")
+			$.when(makeAjaxCall("scatsData"), makeAjaxCallForTweet("tweetData")).done(function(a1, a2){
+				outerAjaxCallContent(a1,a2);
+				$('#daySelector').show();
+				$('#daySelector').click(function () {
+					console.log("inside day selector")
+					$.when(makeAjaxCall2($('#daySelector').val(),"scatsDataWithTime"), makeAjaxCallForTweet2($('#daySelector').val(),"tweetDataWithTime")).done(function(a1, a2){
+					console.log(a1);
+					console.log(a2)
+					innerAjaxCallContent(a1,a2);
+					});
+				});
+			});
+		});
+	</script>
+	<script src="js/fusioncharts.js"></script>
+	<script src="js/fusioncharts.charts.js"></script>
+	<script src="js/themes/fusioncharts.theme.zune.js"></script>
+	<script src="js/tweetScatsCharts.js.js"></script>
+	<script src="http://static.fusioncharts.com/code/latest/fusioncharts.js"></script>
+	<script src="http://static.fusioncharts.com/code/latest/themes/fusioncharts.theme.fint.js?cacheBust=56"></script>
+</body>

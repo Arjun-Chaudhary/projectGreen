@@ -5,12 +5,12 @@ database and a javacript file for all making ajax call throygh php file and then
 ##Main File => index.html
 
 ##Folders:
-Html files: contains all html files referenced by index.html
-php files: contains all php files referenced by html files.
-js : contains all javascript files referenced by html files.
-roadAnalytics: contains python script to find tweets made on road.
-twitter analytics : contains all code to do twitter sentiment analysis.
-RealTimeHarvester: used to get real time tweets made on road.
+-Html files: contains all html files referenced by index.html
+-php files: contains all php files referenced by html files.
+-js : contains all javascript files referenced by html files.
+-roadAnalytics: contains python script to find tweets made on road.
+-twitter analytics : contains all code to do twitter sentiment analysis.
+-RealTimeHarvester: used to get real time tweets made on road.
 
 ##Twitter Harvestors:
 ####Deploy Harvester

@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+ <html>
+   <head>
+     <title>Google Maps JavaScript API v3 Example: Map Simple</title>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+     <meta charset="utf-8">
+<style type="text/css">
+ #map {
+     height: 500px;
+     width: 500px;
+ }
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDtSjS-3QGgnTFv_93r9ygiRly3k6LsSM&sensor=false"></script>
+   </head>
+   <body>
+
+<script type="text/javascript">
+var map;
+var markers = {};
+var bounds = null;
+// add marker to object
+var posi = new google.maps.LatLng(53.801279, -1.548567);
+var name = 'Vince';
+markers[name] = {};
+markers[name].id = 1;
+markers[name].lat = 53.801279;
+markers[name].lng = -1.548567;
+markers[name].state = 'Online';
+markers[name].position = posi;
+markers[name].selected = false;
+
+$(document).ready(function () {
+
+    var mapOptions = {
+        zoom: 5,
+        center: new google.maps.LatLng(53.801279, -1.548567),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    var infowindow = new google.maps.InfoWindow();
+    for (var key in markers) {
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(markers[key].lat, markers[key].lng),
+            map: map
+        });
+        markers[key].marker = marker;
+
+        google.maps.event.addListener(marker, 'click', (function (marker, key) {
+            return function () {
+                infowindow.setContent(key);
+                infowindow.open(map, marker);
+            }
+        })(marker, key));
+    }
+
+    // Start drag rectangle to select markers !!!!!!!!!!!!!!!!
+    var shiftPressed = false;
+
+    $(window).keydown(function (evt) {
+        if (evt.which === 16) { // shift
+            shiftPressed = true;
+        }
+    }).keyup(function (evt) {
+        if (evt.which === 16) { // shift
+            shiftPressed = false;
+        }
+    });
+
+    var mouseDownPos, gribBoundingBox = null,
+        mouseIsDown = 0;
+    var themap = map;
+
+    google.maps.event.addListener(themap, 'mousemove', function (e) {
+        if (mouseIsDown && shiftPressed) {
+            if (gribBoundingBox !== null) // box exists
+            {
+                bounds.extend(e.latLng);                
+                gribBoundingBox.setBounds(bounds); // If this statement is enabled, I lose mouseUp events
+
+            } else // create bounding box
+            {
+                bounds = new google.maps.LatLngBounds();
+                bounds.extend(e.latLng);
+                gribBoundingBox = new google.maps.Rectangle({
+                    map: themap,
+                    bounds: bounds,
+                    fillOpacity: 0.15,
+                    strokeWeight: 0.9,
+                    clickable: false
+                });
+            }
+        }
+    });
+
+    google.maps.event.addListener(themap, 'mousedown', function (e) {
+        if (shiftPressed) {
+
+            mouseIsDown = 1;
+            mouseDownPos = e.latLng;
+            themap.setOptions({
+                draggable: false
+            });
+        }
+    });
+
+    google.maps.event.addListener(themap, 'mouseup', function (e) {
+        if (mouseIsDown && shiftPressed) {
+            mouseIsDown = 0;
+            if (gribBoundingBox !== null) // box exists
+            {
+                var boundsSelectionArea = new google.maps.LatLngBounds(gribBoundingBox.getBounds().getSouthWest(), gribBoundingBox.getBounds().getNorthEast());
+                
+                for (var key in markers) { // looping through my Markers Collection	
+
+//                    if (boundsSelectionArea.contains(markers[key].marker.getPosition())) 
+                    if (gribBoundingBox.getBounds().contains(markers[key].marker.getPosition())) 
+                    {
+                        //if(flashMovie !== null && flashMovie !== undefined) {
+                        markers[key].marker.setIcon("http://maps.google.com/mapfiles/ms/icons/blue.png")
+			document.getElementById('info').innerHTML += "key:"+key+" posn:"+markers[key].marker.getPosition()+" in bnds:"+gribBoundingBox.getBounds()+"<br>";
+                        // console.log("User selected:" + key + ", id:" + markers[key].id);
+                        //}   
+                    } else {
+                        //if(flashMovie !== null && flashMovie !== undefined) {
+                        markers[key].marker.setIcon("http://maps.google.com/mapfiles/ms/icons/red.png")
+			document.getElementById('info').innerHTML += "key:"+key+" posn:"+markers[key].marker.getPosition()+" out of bnds:"+gribBoundingBox.getBounds()+"<br>";
+                        // console.log("User NOT selected:" + key + ", id:" + markers[key].id);
+                        //} 
+                    }
+                }
+
+                gribBoundingBox.setMap(null); // remove the rectangle
+            }
+            gribBoundingBox = null;
+
+        }
+
+        themap.setOptions({
+            draggable: true
+        });
+        //stopDraw(e);
+    });
+
+});
+</script>
+
+<div id="map"></div>
+     <div id="info"></div>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"> 
+</script> 
+<script type="text/javascript"> 
+_uacct = "UA-162157-1";
+urchinTracker();
+</script> 
+   </body>
+ </html>

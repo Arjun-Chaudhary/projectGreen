@@ -1,0 +1,17 @@
+---
+- hosts: all
+  user: ubuntu
+  sudo: yes
+  tasks:
+    - name: Install Python tweepy package
+      pip: name=tweepy
+    - name: Install Python couchdb package
+      pip: name=couchdb
+    - name: Install Python jsonpickle package
+      pip: name=jsonpickle
+    - name: Install Python requests package
+      pip: name=requests[security]
+    - name: Install Python configparser package
+      pip: name=configparser
+    - name: Creating Seed DB to get initial tweet
+      command: python /home/ubuntu/tweetHarvester/deploySeedDB.py

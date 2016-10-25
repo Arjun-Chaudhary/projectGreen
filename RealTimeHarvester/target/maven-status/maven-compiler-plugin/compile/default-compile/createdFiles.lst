@@ -1,0 +1,6 @@
+yikaig\beans\MyListener.class
+yikaig\beans\WebServiceConnector.class
+yikaig\config\BeanConfig.class
+yikaig\Launcher.class
+yikaig\spatialDB\repository\StreetRepository.class
+yikaig\spatialDB\entity\StreetEntity.class
