@@ -2,6 +2,8 @@
 This website has different modules. However, on an abstract level every anlytics has three parts one html file, one php file to interact with
 database and a javacript file for all making ajax call throygh php file and then represent the output data.
 
+We have also included Poster and a PPT to explain the problem which this project is trying to solve.
+
 
 ##Web_Application Folder Contains:
 - index.html: Main File.
